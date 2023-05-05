@@ -23,6 +23,12 @@ public class UserEntity {
 
     private String role;
 
+    public UserEntity(String email, String password, String role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<GroupEntity> groups;
 }
