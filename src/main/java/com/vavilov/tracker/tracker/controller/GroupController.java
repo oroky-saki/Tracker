@@ -66,4 +66,15 @@ public class GroupController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/getAll")
+    public ResponseEntity getGroupsByUser(@RequestParam Long userID) {
+        try {
+            return ResponseEntity.ok(groupService.getAllGroupsByUser(userID));
+        }catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

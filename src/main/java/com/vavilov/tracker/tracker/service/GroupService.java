@@ -9,6 +9,7 @@ import com.vavilov.tracker.tracker.repository.GroupRepo;
 import com.vavilov.tracker.tracker.repository.UserRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,5 +59,11 @@ public class GroupService {
         group.orElseThrow();
         group.get().setTitle(newTitle);
         groupRepo.save(group.get());
+    }
+
+    public List<GroupDto> getAllGroupsByUser(Long userID) {
+        Optional<UserEntity> user = userRepo.findById(userID);
+        user.orElseThrow();
+        return groupMapper.toDtoList(groupRepo.findAllByUser(user.get()));
     }
 }
