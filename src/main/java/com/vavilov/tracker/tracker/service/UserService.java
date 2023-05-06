@@ -4,7 +4,6 @@ import com.vavilov.tracker.tracker.dto.UserDto;
 import com.vavilov.tracker.tracker.entity.UserEntity;
 import com.vavilov.tracker.tracker.exception.InvalidEmailException;
 import com.vavilov.tracker.tracker.exception.UserAlreadyExistException;
-import com.vavilov.tracker.tracker.exception.UserIsNotExistException;
 import com.vavilov.tracker.tracker.mapper.UserMapper;
 import com.vavilov.tracker.tracker.repository.UserRepo;
 import com.vavilov.tracker.tracker.utils.EmailUtil;
@@ -41,11 +40,10 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public UserDto getUser(Long id) throws UserIsNotExistException {
+    public UserDto getUser(Long id) {
         Optional<UserEntity> user = userRepo.findById(id);
-        if (user.isEmpty()) {
-            throw new UserIsNotExistException("User is not exist");
-        }
+        user.orElseThrow();
+
         return userMapper.toDto(user.get());
     }
 }
