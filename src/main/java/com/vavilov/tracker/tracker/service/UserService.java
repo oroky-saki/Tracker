@@ -4,10 +4,13 @@ import com.vavilov.tracker.tracker.dto.UserDto;
 import com.vavilov.tracker.tracker.entity.UserEntity;
 import com.vavilov.tracker.tracker.exception.InvalidEmailException;
 import com.vavilov.tracker.tracker.exception.UserAlreadyExistException;
+import com.vavilov.tracker.tracker.exception.UserIsNotExistException;
 import com.vavilov.tracker.tracker.mapper.UserMapper;
 import com.vavilov.tracker.tracker.repository.UserRepo;
 import com.vavilov.tracker.tracker.utils.EmailUtil;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -22,6 +25,7 @@ public class UserService {
         this.emailUtil = emailUtil;
     }
 
+    // Создание пользователя
     public UserDto createUser(String email, String password) throws UserAlreadyExistException, InvalidEmailException {
         // Проверка валидности адреса электронной почты
         if (EmailUtil.validEmail(email) == false)
@@ -35,5 +39,13 @@ public class UserService {
 
         userRepo.save(user);
         return userMapper.toDto(user);
+    }
+
+    public UserDto getUser(Long id) throws UserIsNotExistException {
+        Optional<UserEntity> user = userRepo.findById(id);
+        if (user.isEmpty()) {
+            throw new UserIsNotExistException("User is not exist");
+        }
+        return userMapper.toDto(user.get());
     }
 }

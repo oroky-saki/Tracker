@@ -5,13 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
-@NoArgsConstructor
 @Data
-public class UserDto {
+@NoArgsConstructor
+public class GroupDto {
 
-    private String email;
+    private Long id;
 
-    private String role;
+    private String title;
+
+
 }

@@ -25,4 +25,9 @@ public class GroupEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     private List<TimerEntity> timers;
+
+    public GroupEntity(String title, UserEntity user) {
+        this.title = title;
+        this.user = user;
+    }
 }
