@@ -10,6 +10,7 @@ import com.vavilov.tracker.tracker.repository.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -26,7 +27,7 @@ public class GroupService {
     }
 
     // Создание новой группы
-    public GroupDto createGroup(String title, Long userID) throws GroupAlreadyExistException {
+    public GroupDto createGroup(String title, Long userID) throws GroupAlreadyExistException, NoSuchElementException {
         if (groupRepo.findByTitle(title) != null) {
             throw new GroupAlreadyExistException("Group already exist");
         }
@@ -41,27 +42,28 @@ public class GroupService {
 
     }
 
+    // Возможно стоит удалить
     // Получение группы по ID
-    public GroupDto getOneGroup(Long groupID) {
+    public GroupDto getOneGroup(Long groupID) throws NoSuchElementException{
         Optional<GroupEntity> group = groupRepo.findById(groupID);
         group.orElseThrow();
         return groupMapper.toDto(group.get());
     }
 
-    public void deleteGroup(Long groupID) {
+    public void deleteGroup(Long groupID) throws NoSuchElementException{
         Optional<GroupEntity> group = groupRepo.findById(groupID);
         group.orElseThrow();
         groupRepo.deleteById(groupID);
     }
 
-    public void patchBandsTitle(Long groupID, String newTitle) {
+    public void patchBandsTitle(Long groupID, String newTitle) throws NoSuchElementException {
         Optional<GroupEntity> group = groupRepo.findById(groupID);
         group.orElseThrow();
         group.get().setTitle(newTitle);
         groupRepo.save(group.get());
     }
 
-    public List<GroupDto> getAllGroupsByUser(Long userID) {
+    public List<GroupDto> getAllGroupsByUser(Long userID) throws NoSuchElementException {
         Optional<UserEntity> user = userRepo.findById(userID);
         user.orElseThrow();
         return groupMapper.toDtoList(groupRepo.findAllByUser(user.get()));

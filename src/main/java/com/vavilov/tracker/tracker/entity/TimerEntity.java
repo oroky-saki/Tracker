@@ -27,6 +27,15 @@ public class TimerEntity {
 
     private String status;
 
+    public TimerEntity(String title, Date start_time, int value, int value_pause, String status, GroupEntity group) {
+        this.title = title;
+        this.start_time = start_time;
+        this.value = value;
+        this.value_pause = value_pause;
+        this.status = status;
+        this.group = group;
+    }
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     private GroupEntity group;

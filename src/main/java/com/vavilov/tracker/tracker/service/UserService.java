@@ -9,6 +9,7 @@ import com.vavilov.tracker.tracker.repository.UserRepo;
 import com.vavilov.tracker.tracker.utils.EmailUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -40,7 +41,7 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public UserDto getUser(Long id) {
+    public UserDto getUser(Long id) throws NoSuchElementException {
         Optional<UserEntity> user = userRepo.findById(id);
         user.orElseThrow();
 
