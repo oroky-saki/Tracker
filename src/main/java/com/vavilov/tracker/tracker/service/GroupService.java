@@ -7,6 +7,7 @@ import com.vavilov.tracker.tracker.exception.GroupAlreadyExistException;
 import com.vavilov.tracker.tracker.mapper.GroupMapper;
 import com.vavilov.tracker.tracker.repository.GroupRepo;
 import com.vavilov.tracker.tracker.repository.UserRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class GroupService {
     }
 
     // Создание новой группы
+    @Transactional
     public GroupDto createGroup(String title, Long userID) throws GroupAlreadyExistException, NoSuchElementException {
         if (groupRepo.findByTitle(title) != null) {
             throw new GroupAlreadyExistException("Group already exist");
@@ -44,25 +46,29 @@ public class GroupService {
 
     // Возможно стоит удалить
     // Получение группы по ID
+    @Transactional
     public GroupDto getOneGroup(Long groupID) throws NoSuchElementException{
         Optional<GroupEntity> group = groupRepo.findById(groupID);
         group.orElseThrow();
         return groupMapper.toDto(group.get());
     }
 
+    @Transactional
     public void deleteGroup(Long groupID) throws NoSuchElementException{
         Optional<GroupEntity> group = groupRepo.findById(groupID);
         group.orElseThrow();
         groupRepo.deleteById(groupID);
     }
 
-    public void patchBandsTitle(Long groupID, String newTitle) throws NoSuchElementException {
+    @Transactional
+    public GroupDto changeGroupTitle(Long groupID, String newTitle) throws NoSuchElementException {
         Optional<GroupEntity> group = groupRepo.findById(groupID);
         group.orElseThrow();
         group.get().setTitle(newTitle);
-        groupRepo.save(group.get());
+        return groupMapper.toDto(groupRepo.save(group.get()));
     }
 
+    @Transactional
     public List<GroupDto> getAllGroupsByUser(Long userID) throws NoSuchElementException {
         Optional<UserEntity> user = userRepo.findById(userID);
         user.orElseThrow();

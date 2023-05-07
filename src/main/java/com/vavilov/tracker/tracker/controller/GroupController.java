@@ -56,10 +56,9 @@ public class GroupController {
     }
 
     @PatchMapping
-    public ResponseEntity patchGroup(@RequestParam Long groupID, @RequestParam String newTitle) {
+    public ResponseEntity changeGroupTitle(@RequestParam Long groupID, @RequestParam String newTitle) {
         try {
-            groupService.patchBandsTitle(groupID, newTitle);
-            return ResponseEntity.status(HttpStatus.OK).body("patched");
+            return ResponseEntity.ok(groupService.changeGroupTitle(groupID, newTitle));
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

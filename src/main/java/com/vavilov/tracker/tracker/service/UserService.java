@@ -7,6 +7,7 @@ import com.vavilov.tracker.tracker.exception.UserAlreadyExistException;
 import com.vavilov.tracker.tracker.mapper.UserMapper;
 import com.vavilov.tracker.tracker.repository.UserRepo;
 import com.vavilov.tracker.tracker.utils.EmailUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -26,6 +27,7 @@ public class UserService {
     }
 
     // Создание пользователя
+    @Transactional
     public UserDto createUser(String email, String password) throws UserAlreadyExistException, InvalidEmailException {
         // Проверка валидности адреса электронной почты
         if (EmailUtil.validEmail(email) == false)
@@ -41,6 +43,7 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    @Transactional
     public UserDto getUser(Long id) throws NoSuchElementException {
         Optional<UserEntity> user = userRepo.findById(id);
         user.orElseThrow();
