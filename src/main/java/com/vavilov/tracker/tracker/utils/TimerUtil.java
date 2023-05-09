@@ -11,18 +11,24 @@ public class TimerUtil {
 
     public static TimerEntity runTimer(TimerEntity timerEntity) {
 
-        // Получение времени старта в секундах
-        Long st = timerEntity.getStart_time().getTime();
-        int startTime = st.intValue();
-
         // Создание новой сущности для замены старой
         TimerEntity newTimer = new TimerEntity();
 
         newTimer.setStatus("run");
-        newTimer.setStart_time(timerEntity.getStart_time());
         newTimer.setTitle(timerEntity.getTitle());
         newTimer.setId(timerEntity.getId());
         newTimer.setGroup(timerEntity.getGroup());
+
+        // Задание времени старта при первом старте
+        if (timerEntity.getStatus().equals("default")) {
+            newTimer.setStart_time(new Date());
+        } else {
+            newTimer.setStart_time(timerEntity.getStart_time());
+        }
+
+        // Получение времени старта в секундах
+        Long st = newTimer.getStart_time().getTime();
+        int startTime = st.intValue();
 
         // Получение текущего времени в секундах и перевод к типу long
         Long date = new Date().getTime();
@@ -79,10 +85,10 @@ public class TimerUtil {
         int currentTime = date.intValue();
 
         if (prevStatus.equals("run")) {
-            newTimer.setValue_pause(currentTime - startTime - timerEntity.getValue());
-            newTimer.setValue(currentTime - startTime - newTimer.getValue_pause());
-        } else {
+            newTimer.setValue_pause(timerEntity.getValue_pause());
             newTimer.setValue(currentTime - startTime - timerEntity.getValue_pause());
+        } else {
+            newTimer.setValue(timerEntity.getValue());
             newTimer.setValue_pause(currentTime - startTime - newTimer.getValue());
         }
 

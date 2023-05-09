@@ -79,7 +79,7 @@ public class TimerService {
         Optional<TimerEntity> timer = timerRepo.findById(timerID);
         timer.orElseThrow();
 
-        if (timer.get().getStatus().equals("stop")) {
+        if (timer.get().getStatus().equals("stop") || timer.get().getStatus().equals(newStatus)) {
             return timerMapper.toDto(timer.get());
         }
 
