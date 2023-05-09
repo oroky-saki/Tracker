@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -90,6 +91,17 @@ public class TimerController {
         try {
             return ResponseEntity.ok(timerService.changeTimerStatus(timerID, newStatus));
         } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity saveReport(@RequestParam Long groupID) {
+        try {
+            return ResponseEntity.ok(timerService.saveReportByGroup(groupID));
+        } catch (IOException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

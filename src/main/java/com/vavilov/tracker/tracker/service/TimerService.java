@@ -10,6 +10,7 @@ import com.vavilov.tracker.tracker.utils.TimerUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -96,6 +97,16 @@ public class TimerService {
         }
 
         return timerMapper.toDto(timerRepo.save(updatedTimer));
+    }
+
+    @Transactional
+    public String saveReportByGroup(Long groupID) throws IOException {
+        Optional<GroupEntity> group = groupRepo.findById(groupID);
+        group.orElseThrow();
+
+        List<TimerEntity> timers = timerRepo.getAllByGroup(group.get());
+        return TimerUtil.groupReport(timers);
+
     }
 
 }

@@ -4,7 +4,11 @@ import com.vavilov.tracker.tracker.entity.TimerEntity;
 import com.vavilov.tracker.tracker.repository.TimerRepo;
 import org.springframework.stereotype.Component;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class TimerUtil {
@@ -94,5 +98,27 @@ public class TimerUtil {
 
         return newTimer;
 
+    }
+
+    public static String groupReport(List<TimerEntity> groupList) throws IOException {
+
+        String timerLine = "";
+
+        for (int i = 0; i < groupList.size(); i++) {
+
+            TimerEntity timer = groupList.get(i);
+            timerLine += timer.getTitle() + ":     " + (timer.getValue()/1000) + " seconds \n";
+        }
+
+        try {
+            FileOutputStream fos = new FileOutputStream("Z:\\report.txt");
+            fos.write(timerLine.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            return e.getMessage();
+        }
+
+        return "Done";
     }
 }
