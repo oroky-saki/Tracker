@@ -6,6 +6,7 @@ import com.vavilov.tracker.tracker.entity.TimerEntity;
 import com.vavilov.tracker.tracker.mapper.TimerMapper;
 import com.vavilov.tracker.tracker.repository.GroupRepo;
 import com.vavilov.tracker.tracker.repository.TimerRepo;
+import com.vavilov.tracker.tracker.utils.TimerUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class TimerService {
         Optional<GroupEntity> group = groupRepo.findById(groupID);
         group.orElseThrow();
         Date start_time = new Date();
-        TimerEntity timer = new TimerEntity(title, start_time, 0, 0, "stop", group.get());
+        TimerEntity timer = new TimerEntity(title, start_time, 0, 0, "default", group.get());
         return timerMapper.toDto(timerRepo.save(timer));
 
     }
@@ -71,6 +72,30 @@ public class TimerService {
         timer.orElseThrow();
         timer.get().setTitle(title);
         return timerMapper.toDto(timerRepo.save(timer.get()));
+    }
+
+    @Transactional
+    public TimerDto changeTimerStatus(Long timerID, String newStatus) throws NoSuchElementException {
+        Optional<TimerEntity> timer = timerRepo.findById(timerID);
+        timer.orElseThrow();
+
+        if (timer.get().getStatus().equals("stop")) {
+            return timerMapper.toDto(timer.get());
+        }
+
+        TimerEntity updatedTimer;
+
+        if (newStatus.equals("run")){
+            updatedTimer = TimerUtil.runTimer(timer.get());
+        } else if (newStatus.equals("pause")) {
+            updatedTimer = TimerUtil.pauseTimer(timer.get());
+        } else if (newStatus.equals("stop")) {
+            updatedTimer = TimerUtil.stopTimer(timer.get(), timer.get().getStatus());
+        } else {
+            updatedTimer = TimerUtil.runTimer(timer.get());
+        }
+
+        return timerMapper.toDto(timerRepo.save(updatedTimer));
     }
 
 }

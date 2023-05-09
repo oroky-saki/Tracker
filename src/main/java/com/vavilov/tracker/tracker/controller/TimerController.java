@@ -74,10 +74,21 @@ public class TimerController {
         }
     }
 
-    @PatchMapping
+    @PatchMapping("/changeTitle")
     public ResponseEntity changeTimerTitle(@RequestParam Long timerID, @RequestParam String newTitle) {
         try {
             return ResponseEntity.ok(timerService.changeTimerTitle(timerID, newTitle));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/changeStatus")
+    public ResponseEntity changeTimerStatus(@RequestParam Long timerID, @RequestParam String newStatus) {
+        try {
+            return ResponseEntity.ok(timerService.changeTimerStatus(timerID, newStatus));
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
