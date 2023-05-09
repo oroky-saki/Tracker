@@ -107,8 +107,15 @@ public class TimerUtil {
         for (int i = 0; i < groupList.size(); i++) {
 
             TimerEntity timer = groupList.get(i);
-            timerLine += timer.getTitle() + ":     " + (timer.getValue()/1000) + " seconds \n";
+            int secs = timer.getValue()/1000;
+            int hour = secs / 3600;
+            int min = (secs / 60) % 60;
+            int sec = secs % 60;
+            timerLine += timer.getTitle() + ":     " + String.format("%02d:%02d:%02d", hour, min, sec) + "\n";
+            timerLine += "\n";
         }
+
+
 
         try {
             FileOutputStream fos = new FileOutputStream("Z:\\report.txt");
