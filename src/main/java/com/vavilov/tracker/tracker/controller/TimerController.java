@@ -108,4 +108,15 @@ public class TimerController {
         }
     }
 
+    @PatchMapping("/pauseAll")
+    public ResponseEntity pauseOrStopThisGroup(@RequestParam Long groupID, @RequestParam String newStatus) {
+        try {
+            return ResponseEntity.ok(timerService.pauseOrStopActiveTimers(groupID, newStatus));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

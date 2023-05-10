@@ -115,8 +115,6 @@ public class TimerUtil {
             timerLine += "\n";
         }
 
-
-
         try {
             FileOutputStream fos = new FileOutputStream("Z:\\report.txt");
             fos.write(timerLine.getBytes());
@@ -128,4 +126,5 @@ public class TimerUtil {
 
         return "Done";
     }
+
 }

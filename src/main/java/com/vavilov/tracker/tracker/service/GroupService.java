@@ -74,4 +74,6 @@ public class GroupService {
         user.orElseThrow();
         return groupMapper.toDtoList(groupRepo.findAllByUser(user.get()));
     }
+
+
 }

@@ -3,18 +3,17 @@ package com.vavilov.tracker.tracker.service;
 import com.vavilov.tracker.tracker.dto.TimerDto;
 import com.vavilov.tracker.tracker.entity.GroupEntity;
 import com.vavilov.tracker.tracker.entity.TimerEntity;
+import com.vavilov.tracker.tracker.entity.UserEntity;
 import com.vavilov.tracker.tracker.mapper.TimerMapper;
 import com.vavilov.tracker.tracker.repository.GroupRepo;
 import com.vavilov.tracker.tracker.repository.TimerRepo;
+import com.vavilov.tracker.tracker.repository.UserRepo;
 import com.vavilov.tracker.tracker.utils.TimerUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TimerService {
@@ -22,11 +21,13 @@ public class TimerService {
     private final GroupRepo groupRepo;
     private final TimerRepo timerRepo;
     private final TimerMapper timerMapper;
+    private final UserRepo userRepo;
 
-    public TimerService(GroupRepo groupRepo, TimerRepo timerRepo, TimerMapper timerMapper) {
+    public TimerService(GroupRepo groupRepo, TimerRepo timerRepo, TimerMapper timerMapper, UserRepo userRepo) {
         this.groupRepo = groupRepo;
         this.timerRepo = timerRepo;
         this.timerMapper = timerMapper;
+        this.userRepo = userRepo;
     }
 
     @Transactional
@@ -87,6 +88,15 @@ public class TimerService {
         TimerEntity updatedTimer;
 
         if (newStatus.equals("run")){
+            // Все таймеры в данной группе
+            List<TimerEntity> allTimersByGroup = timerRepo.getAllByGroup(timer.get().getGroup());
+            for (int i = 0; i < allTimersByGroup.size(); i++) {
+                if (allTimersByGroup.get(i).getStatus().equals("run")) {
+                    TimerEntity currentTimerByGroup = TimerUtil.pauseTimer(allTimersByGroup.get(i));
+                    timerRepo.save(currentTimerByGroup);
+                }
+            }
+
             updatedTimer = TimerUtil.runTimer(timer.get());
         } else if (newStatus.equals("pause")) {
             updatedTimer = TimerUtil.pauseTimer(timer.get());
@@ -107,6 +117,39 @@ public class TimerService {
         List<TimerEntity> timers = timerRepo.getAllByGroup(group.get());
         return TimerUtil.groupReport(timers);
 
+    }
+
+    @Transactional
+    public List<TimerDto> pauseOrStopActiveTimers(Long groupID, String newStatus) throws NoSuchElementException {
+
+        List<TimerDto> result = new ArrayList<>();
+
+        Optional<GroupEntity> group = groupRepo.findById(groupID);
+        group.orElseThrow();
+        List<TimerEntity> timers = timerRepo.getAllByGroup(group.get());
+
+        for (int i = 0; i < timers.size(); i++) {
+
+            if (timers.get(i).getStatus().equals("stop") || timers.get(i).getStatus().equals("default")) {
+                continue;
+            }
+
+            if (newStatus.equals("pause")) {
+                if (timers.get(i).getStatus().equals("run")) {
+                    TimerEntity updatedTimer;
+                    updatedTimer = TimerUtil.pauseTimer(timers.get(i));
+                    result.add(timerMapper.toDto(timerRepo.save(updatedTimer)));
+                }
+            } else if (newStatus.equals("stop")) {
+                if (!timers.get(i).getStatus().equals("default")) {
+                    TimerEntity updatedTimer;
+                    updatedTimer = TimerUtil.stopTimer(timers.get(i), timers.get(i).getStatus());
+                    result.add(timerMapper.toDto(timerRepo.save(updatedTimer)));
+                }
+            }
+        }
+
+        return result;
     }
 
 }
