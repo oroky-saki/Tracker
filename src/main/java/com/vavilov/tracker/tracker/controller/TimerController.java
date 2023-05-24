@@ -22,8 +22,6 @@ public class TimerController {
     public ResponseEntity createTimer(@RequestParam String title, @RequestParam Long groupID) {
         try {
             return ResponseEntity.ok(timerService.createTimer(title, groupID));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -33,8 +31,6 @@ public class TimerController {
     public ResponseEntity getOneTimer(@RequestParam Long timerID) {
         try {
             return ResponseEntity.ok(timerService.getOneTimer(timerID));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -44,8 +40,6 @@ public class TimerController {
     public ResponseEntity getTimersByGroup(@RequestParam Long groupID) {
         try {
             return ResponseEntity.ok(timerService.getTimersByGroup(groupID));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -56,8 +50,6 @@ public class TimerController {
         try {
             timerService.deleteTimer(timerID);
             return ResponseEntity.status(HttpStatus.OK).body("timer deleted");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -68,8 +60,6 @@ public class TimerController {
         try {
             timerService.deleteTimersByGroup(groupID);
             return ResponseEntity.status(HttpStatus.OK).body("timers deleted");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -79,8 +69,6 @@ public class TimerController {
     public ResponseEntity changeTimerTitle(@RequestParam Long timerID, @RequestParam String newTitle) {
         try {
             return ResponseEntity.ok(timerService.changeTimerTitle(timerID, newTitle));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -90,8 +78,6 @@ public class TimerController {
     public ResponseEntity changeTimerStatus(@RequestParam Long timerID, @RequestParam String newStatus) {
         try {
             return ResponseEntity.ok(timerService.changeTimerStatus(timerID, newStatus));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -101,8 +87,6 @@ public class TimerController {
     public ResponseEntity saveReport(@RequestParam Long groupID) {
         try {
             return ResponseEntity.ok(timerService.saveReportByGroup(groupID));
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -112,8 +96,6 @@ public class TimerController {
     public ResponseEntity pauseOrStopThisGroup(@RequestParam Long groupID, @RequestParam String newStatus) {
         try {
             return ResponseEntity.ok(timerService.pauseOrStopActiveTimers(groupID, newStatus));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

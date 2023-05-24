@@ -24,8 +24,6 @@ public class UserController {
             return ResponseEntity.ok(userService.createUser(email, password));
         } catch (UserAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (InvalidEmailException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -35,8 +33,6 @@ public class UserController {
     public ResponseEntity getUser(@RequestParam Long id) {
         try {
             return ResponseEntity.ok(userService.getUser(id));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -23,10 +23,6 @@ public class GroupController {
     public ResponseEntity createGroup(@RequestParam String title, @RequestParam Long userID) {
         try {
             return ResponseEntity.ok(groupService.createGroup(title, userID));
-        } catch (GroupAlreadyExistException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -36,8 +32,6 @@ public class GroupController {
     public ResponseEntity getOneGroup(@RequestParam Long groupID) {
         try {
             return ResponseEntity.ok(groupService.getOneGroup(groupID));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -48,8 +42,6 @@ public class GroupController {
         try {
             groupService.deleteGroup(groupID);
             return ResponseEntity.status(HttpStatus.OK).body("deleted");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -59,8 +51,6 @@ public class GroupController {
     public ResponseEntity changeGroupTitle(@RequestParam Long groupID, @RequestParam String newTitle) {
         try {
             return ResponseEntity.ok(groupService.changeGroupTitle(groupID, newTitle));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -70,8 +60,6 @@ public class GroupController {
     public ResponseEntity getGroupsByUser(@RequestParam Long userID) {
         try {
             return ResponseEntity.ok(groupService.getAllGroupsByUser(userID));
-        }catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
